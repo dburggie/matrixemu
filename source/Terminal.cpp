@@ -1,0 +1,102 @@
+#include <Terminal.h>
+#include <ncurses.h>
+
+int matrix::Terminal::initialized = 0;
+int matrix::Terminal::rows = 0;
+int matrix::Terminal::cols = 0;
+
+matrix::Terminal::Terminal() { };
+
+matrix::Terminal::~Terminal() { };
+
+
+
+
+void matrix::Terminal::init()
+{
+	initscr();
+	cbreak();
+	halfdelay(1);
+	noecho();
+	//turn off cursor
+	start_color();
+	getmaxyx(stdscr, rows, cols);
+	initialized = 1;
+	blank();
+}
+
+
+void matrix::Terminal::end()
+{
+	blank();
+	draw();
+	endwin();
+}
+
+
+
+//reds/greens/blues are arrays of color intensity values 0-1000
+//only the first 8 values will be read
+//the value at index 0 will be the background color off all the pairs
+void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blues[])
+{
+	if (!initialized) return;
+
+	int i;
+	for (i = 0; i < 8 && i < count; i++)
+	{
+		init_color(i, reds[i], greens[i], blues[i]);
+		init_pair(i,i,0);
+	}
+}
+
+
+
+
+void matrix::Terminal::blank()
+{
+	if (!initialized) return;
+
+	int y,x;
+
+	for (y = 0; y < rows; y++)
+	{
+		for (x = 0; x < cols; x++)
+		{
+			mvaddch(y,x,' '); //ncurses function
+		}
+	}
+
+	move(y,x); //ncurses function
+
+	draw();
+}
+
+
+void matrix::Terminal::draw()
+{
+	if (!initialized) return;
+	refresh();
+}
+
+
+
+void matrix::Terminal::output(int y, int x, int c)
+{
+	if (!initialized) return;
+	if (y < 0 || y > rows) return;
+	if (x < 0 || x > cols) return;
+
+	mvaddch(y,x,c);
+}
+
+
+void matrix::Terminal::output(int y, int x, int c, int color)
+{
+	if (!initialized) return;
+	if (y < 0 || y > rows) return;
+	if (x < 0 || x > cols) return;
+
+	mvaddch(y,x,c | COLOR_PAIR(color));
+}
+
