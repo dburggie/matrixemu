@@ -74,6 +74,7 @@ int main(int argc, char * argv[])
 		matrix::Column::drawAll(columns,tick);
 		matrix::Terminal::draw();
 		matrix::Terminal::pause(20);//this is 1/50 of a second
+		if (matrix::Terminal::done()) break;
 	}
 
 	delete columns;

@@ -1,5 +1,6 @@
 
-CC = g++ -Wall -O0 -Isource
+CC = g++ -std=c++11 -Wall -O0 -Isource
+LIBS = -lpthread -lncurses
 
 EXE = matrix
 
@@ -26,7 +27,7 @@ build/matrix.o: source/matrix.cpp
 	${CC} -o $@ -c $<
 
 ${EXE}: build/matrix.o build/Terminal.o build/Column.o
-	${CC} -o $@ $^ -lncurses
+	${CC} -o $@ $^ ${LIBS}
 
 
 
@@ -41,7 +42,7 @@ build/Terminal.test.o: test/Terminal.test.cpp
 	${CC} -o $@ -c $<
 
 Terminal.test: build/Terminal.test.o build/Terminal.o
-	${CC} -o $@ $^ -lncurses
+	${CC} -o $@ $^ ${LIBS}
 
 
 
@@ -55,7 +56,7 @@ build/Column.test.o: test/Column.test.cpp build/Column.o
 	${CC} -o $@ -c $<
 
 Column.test: build/Column.test.o build/Column.o build/Terminal.o
-	${CC} -o $@ $^ -lncurses
+	${CC} -o $@ $^ ${LIBS}
 
 
 

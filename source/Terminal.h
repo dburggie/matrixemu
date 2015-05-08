@@ -15,6 +15,10 @@ namespace matrix
 			static int delay;
 			static int paletteSize;
 
+			//user interface stop flag
+			static int stopflag;
+			static void UIwatcher();
+
 		public:
 			~Terminal();
 			
@@ -32,6 +36,9 @@ namespace matrix
 
 			static void output(int y, int x, int c);
 			static void output(int y, int x, int c, int color);
+
+			//returns 1 iff execution must stop now
+			static int done();
 	};
 }
 

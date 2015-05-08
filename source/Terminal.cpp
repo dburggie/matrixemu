@@ -1,12 +1,14 @@
 #include <Terminal.h>
 #include <ncurses.h>
 #include <unistd.h> //for usleep()
+#include <thread>   //std::thread
 
 int matrix::Terminal::initialized = 0;
 int matrix::Terminal::rows = 0;
 int matrix::Terminal::cols = 0;
 int matrix::Terminal::delay = 1; // wait one tenth for input
 int matrix::Terminal::paletteSize = 1;
+
 
 matrix::Terminal::Terminal() { };
 
@@ -17,6 +19,7 @@ matrix::Terminal::~Terminal() { };
 
 void matrix::Terminal::init()
 {
+	//ncurses init functions
 	initscr();
 	cbreak();
 	halfdelay(delay);
@@ -24,15 +27,21 @@ void matrix::Terminal::init()
 	curs_set(0);//cursor invisible
 	start_color();
 	getmaxyx(stdscr, rows, cols);
-	initialized = 1;
-	blank();
+	matrix::Terminal::blank();
+
+	//set init flag
+	matrix::Terminal::initialized = 1;
+
+	//start UI thread
+	std::thread UIthread(matrix::Terminal::UIwatcher);
+	UIthread.detach();
 }
 
 
 void matrix::Terminal::end()
 {
-	blank();
-	draw();
+	matrix::Terminal::blank();
+	matrix::Terminal::draw();
 	endwin();
 }
 
@@ -44,7 +53,7 @@ void matrix::Terminal::end()
 //pairs will have foregrounds from max(7,count-1) to 1 descending
 void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blues[])
 {
-	if (!initialized) return;
+	if (!matrix::Terminal::initialized) return;
 
 	//give n colors, get n-1 pairs
 	//(n-1,0), (n-2,1), ... , (1,0);
@@ -78,7 +87,7 @@ int matrix::Terminal::getPaletteSize()
 
 void matrix::Terminal::blank()
 {
-	if (!initialized) return;
+	if (!matrix::Terminal::initialized) return;
 
 	int y,x;
 
@@ -96,7 +105,7 @@ void matrix::Terminal::blank()
 
 void matrix::Terminal::draw()
 {
-	if (!initialized) return;
+	if (!matrix::Terminal::initialized) return;
 	refresh();
 }
 
@@ -135,11 +144,38 @@ void matrix::Terminal::output(int y, int x, int c)
 
 void matrix::Terminal::output(int y, int x, int c, int color)
 {
-	if (!initialized) return;
+	if (!matrix::Terminal::initialized) return;
 	if (y < 0 || y > rows) return;
 	if (x < 0 || x > cols) return;
 
 	mvaddch(y,x,c | COLOR_PAIR(color));
 	move(0,0);
+}
+
+
+/* USER INTERFACE THREAD STUFF */
+
+int matrix::Terminal::stopflag = 0;
+
+void matrix::Terminal::UIwatcher()
+{
+	int key;
+	do {
+		key = getch();
+		if (key == 'q')
+		{
+			matrix::Terminal::stopflag = 1;
+		}
+
+		else
+		{
+			key = ERR;
+		}
+	} while (key == ERR);
+}
+
+int matrix::Terminal::done()
+{
+	return matrix::Terminal::stopflag;
 }
 
