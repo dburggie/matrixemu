@@ -3,6 +3,6 @@
 *.log
 *.test
 *.o
-matrix
+MatrixEmu
 
 build/
