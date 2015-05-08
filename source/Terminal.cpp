@@ -101,6 +101,7 @@ void matrix::Terminal::output(int y, int x, int c)
 	if (x < 0 || x > cols) return;
 
 	mvaddch(y,x,c);
+	move(0,0);
 }
 
 
@@ -111,5 +112,6 @@ void matrix::Terminal::output(int y, int x, int c, int color)
 	if (x < 0 || x > cols) return;
 
 	mvaddch(y,x,c | COLOR_PAIR(color));
+	move(0,0);
 }
 
