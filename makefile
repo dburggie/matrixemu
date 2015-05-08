@@ -2,18 +2,20 @@
 CC = g++ -Wall -O0 -Isource
 
 
-Terminal.o: source/Terminal.cpp source/Terminal.h
+build/Terminal.o: source/Terminal.cpp source/Terminal.h
 	${CC} -o $@ -c $<
 
-Terminal.test.o: test/Terminal.test.cpp
+build/Terminal.test.o: test/Terminal.test.cpp
 	${CC} -o $@ -c $<
 
 Terminal.test: Terminal.test.o Terminal.o
 	${CC} -o $@ $^ -lncurses
 
 
+build/Column.o: source/Column.cpp source/Column.h build/Terminal.o
+	${CC} -o $@ -c $<
 
 
 clean:
-	rm *.o
-	rm *.test
+	rm -f build/*.o
+	rm -f build/*.test
