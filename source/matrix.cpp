@@ -17,13 +17,11 @@ int main()
 
 	//Column(Column * head, int column, int speed, int length, int height);
 	matrix::Column * columns = new matrix::Column(0,0);
-	std::cerr << "made head column\n";
 	matrix::Column * tmp = NULL;
 
 	//get terminal size
 	int rows,cols;
 	matrix::Terminal::getSize(rows,cols);
-	std::cerr << "got terminal size " << rows << "," << cols << "\n";
 
 	//set up for loop
 	int column, speed = 1, length;
@@ -43,8 +41,6 @@ int main()
 			tmp->setSpeed(speed);
 			tmp->setLength(length);
 			tmp->insert(columns);
-
-			std::cerr << "instantiated new column number" << count << "\n";
 		}
 
 		//do the draw
@@ -55,10 +51,8 @@ int main()
 	}
 
 	delete columns;
-	std::cerr << "deleted columns\n";
 
 	matrix::Terminal::end();
-	std::cerr << "all done\n";
 
 	return 0;
 }
