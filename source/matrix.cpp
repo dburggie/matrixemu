@@ -49,18 +49,18 @@ int main(int argc, char * argv[])
 	//set up for loop
 	int column, speed = 1, length;
 	int tick, nextSpawn = 1;
-	int runtime = seconds * 100;
+	int runtime = seconds * 50;
 
 	//perform the loop
-	//we'll do 100 ticks per second, 10 second run
+	//we'll do 50 ticks per second
 	for (tick = 1; tick < runtime; tick++)
 	{
 		if (tick == nextSpawn)
 		{
-			nextSpawn = 1 + tick + (std::rand() % 5);
+			nextSpawn = 1 + tick + (std::rand() % 2);
 
 			column = std::rand() % cols;
-			speed = 2 + (std::rand() % 10);
+			speed = 1 + (std::rand() % 10);
 			length = 5 + (std::rand() % 50);
 
 			tmp = new matrix::Column(column,rows);
@@ -73,7 +73,7 @@ int main(int argc, char * argv[])
 		matrix::Terminal::blank();
 		matrix::Column::drawAll(columns,tick);
 		matrix::Terminal::draw();
-		matrix::Terminal::pause(10);
+		matrix::Terminal::pause(20);//this is 1/50 of a second
 	}
 
 	delete columns;
