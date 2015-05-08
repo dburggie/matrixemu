@@ -188,7 +188,7 @@ void matrix::Column::draw()
 
 void matrix::Column::draw(int colors)
 {
-	if (colors == 0)
+	if (colors == 1)
 	{
 		this->draw();
 		return;

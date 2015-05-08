@@ -55,6 +55,13 @@ void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blue
 {
 	if (!matrix::Terminal::initialized) return;
 
+	//if terminal has no color support (or can't change colors)
+	//we have to just exit and live with default color
+	if (!has_colors() || !can_change_color())
+	{
+		return;
+	}
+
 	//give n colors, get n-1 pairs
 	//(n-1,0), (n-2,1), ... , (1,0);
 
