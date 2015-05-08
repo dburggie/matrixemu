@@ -40,7 +40,7 @@ void matrix::Terminal::end()
 
 //reds/greens/blues are arrays of color intensity values 0-1000
 //only the first 8 values will be read
-//the value at index 0 will be the background color off all the pairs
+//the value at index 0 will be the background color of all the pairs
 void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blues[])
 {
 	if (!initialized) return;
@@ -49,10 +49,10 @@ void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blue
 	for (i = 0; i < 8 && i < count; i++)
 	{
 		init_color(i, reds[i], greens[i], blues[i]);
-		init_pair(i,i,0);
+		init_pair(i,7-i,0);
 	}
 
-	this->paletteSize = 8 < count ? 8 : count;
+	matrix::Terminal::paletteSize = 8 < count ? 8 : count;
 }
 
 int matrix::Terminal::getPaletteSize()

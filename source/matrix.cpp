@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 
+void setupColors();
 
 int main()
 {
@@ -14,6 +15,7 @@ int main()
 
 	//initialize screen
 	matrix::Terminal::init();
+	setupColors();
 
 	//Column(Column * head, int column, int speed, int length, int height);
 	matrix::Column * columns = new matrix::Column(0,0);
@@ -60,3 +62,19 @@ int main()
 }
 
 
+
+
+void setupColors()
+{
+	int r[8], g[8], b[8];
+	
+	int i;
+	for (i = 0; i < 8; i++)
+	{
+		r[i] = 0;
+		g[i] = 125 * i;
+		b[i] = 0;
+	}
+
+	matrix::Terminal::makePalette(8,r,g,b);
+}
