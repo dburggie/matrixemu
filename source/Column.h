@@ -22,7 +22,7 @@ namespace matrix
 			int * buffer;
 
 		public:
-			Column(Column * head, int column, int speed, int length, int height);
+			Column(int column, int height);
 			~Column();
 
 			int increment();

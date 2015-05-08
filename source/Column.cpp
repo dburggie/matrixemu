@@ -66,6 +66,11 @@ void matrix::Column::setSpeed(int speed)
 }
 
 
+int matrix::Column::getSpeed()
+{
+	return this->speed;
+}
+
 
 void matrix::Column::setLength(int length)
 {

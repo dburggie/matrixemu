@@ -16,7 +16,7 @@ int main()
 	matrix::Terminal::init();
 
 	//Column(Column * head, int column, int speed, int length, int height);
-	matrix::Column * columns = new matrix::Column(NULL,	0,0,0,0);
+	matrix::Column * columns = new matrix::Column(0,0);
 	std::cerr << "made head column\n";
 	matrix::Column * tmp = NULL;
 
@@ -26,7 +26,7 @@ int main()
 	std::cerr << "got terminal size " << rows << "," << cols << "\n";
 
 	//set up for loop
-	int column, speed = 0, length;
+	int column, speed = 1, length;
 	int count = 0, i;
 
 	//perform the loop
@@ -37,7 +37,13 @@ int main()
 		{
 			column = std::rand() % cols;
 			length = 5 + (rand() % 10) + (rand() % 10);
-			tmp = new matrix::Column(columns,column,speed,length,rows);
+			
+			tmp = new matrix::Column(column,rows);
+			
+			tmp->setSpeed(speed);
+			tmp->setLength(length);
+			tmp->insert(columns);
+
 			std::cerr << "instantiated new column number" << count << "\n";
 		}
 
