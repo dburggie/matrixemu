@@ -36,7 +36,13 @@ build/Column.test.o: test/Column.test.cpp build/Column.o
 
 Column.test: build/Column.test.o build/Column.o build/Terminal.o
 	${CC} -o $@ $^ -lncurses
-	
-	
 
+
+
+
+build/letter.test.o: test/letter.test.cpp
+	${CC} -o $@ -c $<
+
+letter.test: build/letter.test.o build/Terminal.o
+	${CC} -o $@ $^ -lncurses
 
