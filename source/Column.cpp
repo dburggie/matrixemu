@@ -209,32 +209,25 @@ void matrix::Column::drawAll(matrix::Column * head)
 }
 
 
+void matrix::Column::drawAll(matrix::Column * head, int ticks)
+{
+	head = head->head;
 
+	//never draw the head
+	matrix::Column * node = head->next;
+	matrix::Column * tmp = NULL;
 
-/*
-#ifndef _COLUMN_H
-#define _COLUMN_H
+	while (node != head)
+	{
+		tmp = node;
+		node = node->next;
 
-		private:
-			Column * first;
-			Column * next;
-			Column * prev; 
-
-			int column; //what terminal column this Column draws to
-			int speed; //number of hundredths to wait for the next increment
-			int length; //how long the tail is
-			int position; //how far down the head is
-
-			int buffer[];
-
-		public:
-			Column(Column * list, int column, int speed, int length);
-			~Column();
-
-			void increment();
-
-			void insert(Column * list);
-			void remove();
-
-			void draw(int maxY);
-*/
+		tmp->draw();
+		if (tmp->getSpeed() % ticks == 0 && tmp->increment())
+		{
+			tmp->remove();
+			delete tmp;
+			tmp = NULL;
+		}
+	}
+}

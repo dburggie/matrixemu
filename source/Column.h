@@ -38,6 +38,7 @@ namespace matrix
 
 			void draw();
 			static void drawAll(Column * head);
+			static void drawAll(Column * head, int ticks);
 	};
 }
 
