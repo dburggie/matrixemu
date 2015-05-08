@@ -17,10 +17,10 @@ namespace matrix
 			int position; //how far down the head is
 			int height; //how many rows in the terminal
 
-			int buffer[];
+			int * buffer;
 
 		public:
-			Column(Column * list, int column, int speed, int length);
+			Column(Column * head, int column, int speed, int length, int height);
 			~Column();
 
 			void increment();

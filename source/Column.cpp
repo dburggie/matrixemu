@@ -1,4 +1,6 @@
 #include <cstdlib>
+#include <Column.h>
+#include <Terminal.h>
 
 //constructor
 matrix::Column::Column(
@@ -43,10 +45,10 @@ matrix::Column::~Column()
 
 	else
 	{
-		this.remove();
+		this->remove();
 	}
 
-	delete buffer;
+	delete [] buffer;
 }
 
 void matrix::Column::insert(matrix::Column * head)
