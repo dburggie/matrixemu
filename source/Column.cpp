@@ -22,7 +22,7 @@ matrix::Column::Column(int column, int height)
 	this->prev = this;
 
 	this->column = column;
-	this->speed = 0;
+	this->speed = 1;//update every tick
 	this->length = 10;
 	this->position = 0;
 	this->height = height;
@@ -44,20 +44,6 @@ matrix::Column::Column(int column, int height)
 
 
 
-void matrix::Column::setSpeed(int speed)
-{
-	this->speed = speed;
-}
-
-
-
-void matrix::Column::setLength(int length)
-{
-	if (length < 0) length = 0;
-	this->length = length;
-}
-
-
 matrix::Column::~Column()
 {
 	if (this == this->head)
@@ -71,6 +57,20 @@ matrix::Column::~Column()
 	}
 
 	delete [] buffer;
+}
+
+
+void matrix::Column::setSpeed(int speed)
+{
+	this->speed = speed;
+}
+
+
+
+void matrix::Column::setLength(int length)
+{
+	if (length < 0) length = 0;
+	this->length = length;
 }
 
 
@@ -106,7 +106,7 @@ void matrix::Column::insert(matrix::Column * head)
 
 	else
 	{
-		this->head = head;
+		this->head = this;
 		this->next = this;
 		this->prev = this;
 	}
@@ -135,7 +135,7 @@ matrix::Column * matrix::Column::remove()
 		head = this->next;
 		matrix::Column * node = this->next->next;
 		head->head = head;
-		while (head != node)
+		while (node != head)
 		{
 			node->head = head;
 			node = node->next;
