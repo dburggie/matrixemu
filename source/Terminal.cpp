@@ -4,6 +4,7 @@
 int matrix::Terminal::initialized = 0;
 int matrix::Terminal::rows = 0;
 int matrix::Terminal::cols = 0;
+int matrix::Terminal::delay = 1; // wait one tenth for input
 
 matrix::Terminal::Terminal() { };
 
@@ -16,7 +17,7 @@ void matrix::Terminal::init()
 {
 	initscr();
 	cbreak();
-	halfdelay(1);
+	halfdelay(delay);
 	noecho();
 	//turn off cursor
 	start_color();
@@ -79,6 +80,20 @@ void matrix::Terminal::draw()
 	refresh();
 }
 
+
+
+void matrix::Terminal::pause()
+{
+	cbreak();
+	getch();
+	halfdelay(delay);
+}
+
+
+void matrix::Terminal::getSize(int & y, int & x)
+{
+	getmaxyx(stdscr,y,x);
+}
 
 
 void matrix::Terminal::output(int y, int x, int c)

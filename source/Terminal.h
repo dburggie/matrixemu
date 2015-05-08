@@ -12,6 +12,7 @@ namespace matrix
 			static int initialized;
 			static int rows;
 			static int cols;
+			static int delay;
 
 		public:
 			~Terminal();
@@ -22,6 +23,10 @@ namespace matrix
 
 			static void blank();
 			static void draw();
+			static void pause();
+
+			static void getSize(int & y, int & x);
+
 			static void output(int y, int x, int c);
 			static void output(int y, int x, int c, int color);
 	};
