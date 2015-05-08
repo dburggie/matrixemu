@@ -16,6 +16,16 @@ tests: ${TESTS}
 
 
 
+build/matrix.o: source/matrix.cpp
+	${CC} -o $@ -c $<
+
+matrix: build/matrix.o build/Terminal.o build/Column.o
+	${CC} -o $@ $^ -lncurses
+
+
+
+
+
 
 
 build/Terminal.o: source/Terminal.cpp source/Terminal.h

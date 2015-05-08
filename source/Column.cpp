@@ -15,39 +15,47 @@ static int rtoc(int r)
 }
 
 //constructor
-matrix::Column::Column(
-		matrix::Column * head, 
-		int column, 
-		int speed, 
-		int length, 
-		int height
-	) //end parameters
+matrix::Column::Column(int column, int height)
 {
-	this->insert(head);
+	this->head = this;
+	this->next = this;
+	this->prev = this;
 
 	this->column = column;
-	this->speed = speed;
-	this->length = length;
+	this->speed = 0;
+	this->length = 10;
 	this->position = 0;
-
 	this->height = height;
 
-	this->buffer = new int[height];
+	this->buffer = NULL;
 
 	this->offscreen = 0;
 	if (this->height <= 0) this->offscreen = 1;
+	else this->buffer = new int[height];
 
 	//fill buffer with random characters
 	int i, c;
 	for (i = 0; i < height; i++)
 	{
 		c = rtoc(std::rand() % (10 + 26 + 26));
-		buffer[i] = c;
+		if (this->buffer) this->buffer[i] = c;
 	}
 }
 
 
 
+void matrix::Column::setSpeed(int speed)
+{
+	this->speed = speed;
+}
+
+
+
+void matrix::Column::setLength(int length)
+{
+	if (length < 0) length = 0;
+	this->length = length;
+}
 
 
 matrix::Column::~Column()
@@ -165,6 +173,37 @@ void matrix::Column::draw()
 		matrix::Terminal::output(y-i,x,this->buffer[y-i]);
 	}
 }
+
+
+
+
+
+
+
+
+void matrix::Column::drawAll(matrix::Column * head)
+{
+	head = head->head;
+
+	//never draw the head
+	matrix::Column * node = head->next;
+	matrix::Column * tmp = NULL;
+
+	while (node != head)
+	{
+		node->draw();
+		tmp = node;
+		node = node->next;
+		if (tmp->increment())
+		{
+			tmp->remove();
+			delete tmp;
+			tmp = NULL;
+		}
+	}
+}
+
+
 
 
 /*

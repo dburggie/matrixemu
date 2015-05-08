@@ -28,12 +28,16 @@ namespace matrix
 			int increment();
 
 			void insert(Column * list);
+			void setSpeed(int speed); //number of ticks before increment
+			int getSpeed();
+			void setLength(int length);
 
 			int isOffscreen();
 
 			Column * remove();
 
 			void draw();
+			static void drawAll(Column * head);
 	};
 }
 
