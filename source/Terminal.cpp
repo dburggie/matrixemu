@@ -6,7 +6,7 @@ int matrix::Terminal::initialized = 0;
 int matrix::Terminal::rows = 0;
 int matrix::Terminal::cols = 0;
 int matrix::Terminal::delay = 1; // wait one tenth for input
-int matrix::Terminal::paletteSize = 0;
+int matrix::Terminal::paletteSize = 1;
 
 matrix::Terminal::Terminal() { };
 
@@ -41,18 +41,22 @@ void matrix::Terminal::end()
 //reds/greens/blues are arrays of color intensity values 0-1000
 //only the first 8 values will be read
 //the value at index 0 will be the background color of all the pairs
+//pairs will have foregrounds from max(7,count-1) to 1 descending
 void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blues[])
 {
 	if (!initialized) return;
 
-	int i;
-	for (i = 0; i < 8 && i < count; i++)
+	//give n colors, get n-1 pairs
+	//(n-1,0), (n-2,1), ... , (1,0);
+
+	int i, size = 8 < count ? 7 : count - 1;
+	for (i = 0; i < size; i++)
 	{
 		init_color(i, reds[i], greens[i], blues[i]);
-		init_pair(i,7-i,0);
+		init_pair(i,size-i,0);
 	}
 
-	matrix::Terminal::paletteSize = 8 < count ? 8 : count;
+	matrix::Terminal::paletteSize = size;
 }
 
 int matrix::Terminal::getPaletteSize()

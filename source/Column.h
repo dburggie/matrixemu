@@ -37,6 +37,7 @@ namespace matrix
 			Column * remove();
 
 			void draw();
+			void draw(int colors);
 			static void drawAll(Column * head);
 			static void drawAll(Column * head, int ticks);
 	};

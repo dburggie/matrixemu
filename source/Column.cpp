@@ -186,6 +186,34 @@ void matrix::Column::draw()
 	}
 }
 
+void matrix::Column::draw(int colors)
+{
+	int blocksize = this->length / colors;
+	if (this->length % colors) blocksize++;
+
+	//we need to draw from the top up.
+	//our ending position is this->position
+	//we print a total of this->length chars
+	//we print this->length - 1 chars before the last
+	//we start at this->position - this->length + 1
+	
+	int y = this->position - this->length + 1;
+	int x = this->column;
+	int c; //color index
+	int i; //for loop index
+
+	for (i = 0; i < this->length; i++)
+	{
+		if (y+i < 0) continue;
+		if (y+i > this->height) break;
+
+		//print lower intensities first (higher values)
+		c = colors - 1 - i / blocksize;
+		matrix::Terminal::output(y+i,x, this->buffer[y+i],c);
+	}
+
+}
+
 
 
 
@@ -201,9 +229,11 @@ void matrix::Column::drawAll(matrix::Column * head)
 	matrix::Column * node = head->next;
 	matrix::Column * tmp = NULL;
 
+	int colors = matrix::Terminal::getPaletteSize();
+
 	while (node != head)
 	{
-		node->draw();
+		node->draw(colors);
 		tmp = node;
 		node = node->next;
 		if (tmp->increment())
@@ -224,12 +254,14 @@ void matrix::Column::drawAll(matrix::Column * head, int ticks)
 	matrix::Column * node = head->next;
 	matrix::Column * tmp = NULL;
 
+	int colors = matrix::Terminal::getPaletteSize();
+
 	while (node != head)
 	{
 		tmp = node;
 		node = node->next;
 
-		tmp->draw();
+		tmp->draw(colors);
 		if (ticks % tmp->getSpeed() == 0)
 		{
 			if (tmp->increment())
