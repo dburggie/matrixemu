@@ -1,12 +1,15 @@
 
 CC = g++ -Wall -O0 -Isource
 
+EXE = matrix
 
+all: ${EXE}
 
 
 clean:
 	rm -f build/*.o
-	rm -f *.test
+	rm -f ${TESTS}
+	rm -f ${EXE}
 
 
 
@@ -19,7 +22,7 @@ tests: ${TESTS}
 build/matrix.o: source/matrix.cpp
 	${CC} -o $@ -c $<
 
-matrix: build/matrix.o build/Terminal.o build/Column.o
+${EXE}: build/matrix.o build/Terminal.o build/Column.o
 	${CC} -o $@ $^ -lncurses
 
 
