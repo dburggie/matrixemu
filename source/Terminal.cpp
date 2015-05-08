@@ -1,5 +1,6 @@
 #include <Terminal.h>
 #include <ncurses.h>
+#include <unistd.h> //for usleep()
 
 int matrix::Terminal::initialized = 0;
 int matrix::Terminal::rows = 0;
@@ -85,6 +86,12 @@ void matrix::Terminal::pause()
 	cbreak();
 	getch();
 	halfdelay(delay);
+}
+
+
+void matrix::Terminal::pause(int ms)
+{
+	usleep(ms * 1000);
 }
 
 

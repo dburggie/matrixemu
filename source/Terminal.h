@@ -24,6 +24,7 @@ namespace matrix
 			static void blank();
 			static void draw();
 			static void pause();
+			static void pause(int ms); //delay for at least ms milliseconds
 
 			static void getSize(int & y, int & x);
 
