@@ -68,9 +68,7 @@ void matrix::Terminal::blank()
 		}
 	}
 
-	move(y,x); //ncurses function
-
-	draw();
+	move(0,0); //ncurses function
 }
 
 
