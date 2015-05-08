@@ -2,6 +2,18 @@
 #include <Column.h>
 #include <Terminal.h>
 
+
+static int rtoc(int r)
+{
+	r %= 10 + 26 + 26;
+	if (r < 10) return r + 0x30;
+	r -= 10;
+	if (r < 26) return r + 0x41;
+	r -= 26;
+	return r + 0x61;
+	
+}
+
 //constructor
 matrix::Column::Column(
 		matrix::Column * head, 
@@ -29,11 +41,7 @@ matrix::Column::Column(
 	int i, c;
 	for (i = 0; i < height; i++)
 	{
-		c = rand() % (10 + 26 + 26);
-		if (c < 10) c += 0x30; //make ascii number
-		else if (c < 10 + 26) c += 0x40; //make ascii upper case
-		else if (c < 10 + 26 + 26) c += 0x60; //make ascii lower case
-		else c = (int) '?'; //this shouldn't happen
+		c = rtoc(std::rand() % (10 + 26 + 26));
 		buffer[i] = c;
 	}
 }
@@ -154,7 +162,7 @@ void matrix::Column::draw()
 	{
 		if (y-i >= this->height) continue;
 		if (y-i < 0) break;
-		matrix::Terminal::output(y-i,x,this->buffer[i]);
+		matrix::Terminal::output(y-i,x,this->buffer[y-i]);
 	}
 }
 
