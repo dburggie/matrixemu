@@ -10,8 +10,11 @@ $ cd matrixemu
 $ make all
 $ make install
 
-
-
+Usage
+$ ./MatrixEmu [approx. duration in seconds]
+* press 'q' to quit at any time
+* MatrixEmu's duration is based on a set number of drawn frames.
+* Slow computers won't be able to render at 50 fps.
 
 Features
 * multiply simultaneous descending columns
