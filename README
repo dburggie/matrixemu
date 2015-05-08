@@ -1,0 +1,14 @@
+MatrixEmu - an emulation of the scrolling console text in 'the Matrix'
+
+*** What Works ***
+Currently, we have scrolling text columns. These columns descend at variable
+rates and have variable lengths. It is easy to add new columns. Columns are 
+automatically culled from the active column linked list when they are found to
+be offscreen after moving down.
+
+*** To Do ***
+Work on getting support for different colors of text. We'll be able to have the
+columns fade from bright green to black smoothly over their length. Column
+motion will be much easier to observe with color transitions.
+
+
