@@ -13,6 +13,7 @@ namespace matrix
 			static int rows;
 			static int cols;
 			static int delay;
+			static int paletteSize;
 
 		public:
 			~Terminal();
@@ -20,6 +21,7 @@ namespace matrix
 			static void init();
 			static void end();
 			static void makePalette(int count, int reds[], int greens[], int blues[]);
+			static int  getPaletteSize();
 
 			static void blank();
 			static void draw();

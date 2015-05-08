@@ -6,6 +6,7 @@ int matrix::Terminal::initialized = 0;
 int matrix::Terminal::rows = 0;
 int matrix::Terminal::cols = 0;
 int matrix::Terminal::delay = 1; // wait one tenth for input
+int matrix::Terminal::paletteSize = 0;
 
 matrix::Terminal::Terminal() { };
 
@@ -20,7 +21,7 @@ void matrix::Terminal::init()
 	cbreak();
 	halfdelay(delay);
 	noecho();
-	//turn off cursor
+	curs_set(0);//cursor invisible
 	start_color();
 	getmaxyx(stdscr, rows, cols);
 	initialized = 1;
@@ -50,6 +51,13 @@ void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blue
 		init_color(i, reds[i], greens[i], blues[i]);
 		init_pair(i,i,0);
 	}
+
+	this->paletteSize = 8 < count ? 8 : count;
+}
+
+int matrix::Terminal::getPaletteSize()
+{
+	return matrix::Terminal::paletteSize;
 }
 
 
