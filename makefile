@@ -6,6 +6,9 @@ EXE = matrix
 all: ${EXE}
 
 
+install: ${EXE}
+	cp ${EXE} ~/bin/MatrixEmu
+
 clean:
 	rm -f build/*.o
 	rm -f ${TESTS}
