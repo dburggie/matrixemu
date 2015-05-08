@@ -6,9 +6,13 @@ CC = g++ -Wall -O0 -Isource
 
 clean:
 	rm -f build/*.o
-	rm -f build/*.test
+	rm -f *.test
 
 
+
+
+TESTS = Terminal.test Column.test
+tests: ${TESTS}
 
 
 
