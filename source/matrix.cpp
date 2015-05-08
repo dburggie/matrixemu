@@ -35,7 +35,7 @@ int main()
 	{
 		if (tick == nextSpawn)
 		{
-			nextSpawn = 1 + tick + (std::rand() % 10);
+			nextSpawn = 1 + tick + (std::rand() % 5);
 
 			column = std::rand() % cols;
 			speed = 2 + (std::rand() % 10);
