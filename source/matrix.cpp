@@ -25,19 +25,21 @@ int main()
 
 	//set up for loop
 	int column, speed = 1, length;
-	int count = 0, i;
+	int tick, nextSpawn = 1;
 
 	//perform the loop
-	for (i = 0; i < 200; i++)
+	//we'll do 100 ticks per second, 10 second run
+	for (tick = 1; tick < 1000; tick++)
 	{
-		//we'll do 100 columns with random lengths
-		if (count++ < 100)
+		if (tick == nextSpawn)
 		{
+			nextSpawn = 1 + tick + (std::rand() % 10);
+
 			column = std::rand() % cols;
-			length = 5 + (rand() % 10) + (rand() % 10);
-			
+			speed = 2 + (std::rand() % 10);
+			length = 5 + (std::rand() % 50);
+
 			tmp = new matrix::Column(column,rows);
-			
 			tmp->setSpeed(speed);
 			tmp->setLength(length);
 			tmp->insert(columns);
@@ -45,9 +47,9 @@ int main()
 
 		//do the draw
 		matrix::Terminal::blank();
-		matrix::Column::drawAll(columns);
+		matrix::Column::drawAll(columns,tick);
 		matrix::Terminal::draw();
-		matrix::Terminal::pause();
+		matrix::Terminal::pause(10);
 	}
 
 	delete columns;

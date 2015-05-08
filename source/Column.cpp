@@ -155,10 +155,17 @@ matrix::Column * matrix::Column::remove()
 }
 
 
+
+
+
+
 int matrix::Column::isOffscreen()
 {
 	return this->offscreen;
 }
+
+
+
 
 
 void matrix::Column::draw()
@@ -223,11 +230,14 @@ void matrix::Column::drawAll(matrix::Column * head, int ticks)
 		node = node->next;
 
 		tmp->draw();
-		if (tmp->getSpeed() % ticks == 0 && tmp->increment())
+		if (ticks % tmp->getSpeed() == 0)
 		{
-			tmp->remove();
-			delete tmp;
-			tmp = NULL;
+			if (tmp->increment())
+			{
+				tmp->remove();
+				delete tmp;
+				tmp = NULL;
+			}
 		}
 	}
 }
