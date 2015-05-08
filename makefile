@@ -1,14 +1,18 @@
 
+INSTALLDIR = ~/bin
+
+
+
 CC = g++ -std=c++11 -Wall -O0 -Isource
 LIBS = -lpthread -lncurses
 
-EXE = matrix
+EXE = MatrixEmu
 
 all: ${EXE}
 
 
 install: ${EXE}
-	cp ${EXE} ~/bin/MatrixEmu
+	cp ${EXE} ${INSTALLDIR}/${EXE}
 
 clean:
 	rm -f build/*.o
