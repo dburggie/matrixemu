@@ -17,7 +17,7 @@ $ ./MatrixEmu [approx. duration in seconds]
 * Slow computers won't be able to render at 50 fps.
 
 Features
-* multiply simultaneous descending columns
+* multiple simultaneous descending columns
 * columns descend with independent speeds
 * columns have independent lengths
 * columns fade evenly to black from their head to their tail
