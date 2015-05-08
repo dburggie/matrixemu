@@ -49,14 +49,23 @@ void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blue
 	//give n colors, get n-1 pairs
 	//(n-1,0), (n-2,1), ... , (1,0);
 
-	int i, size = 8 < count ? 7 : count - 1;
-	for (i = 0; i < size; i++)
+
+	int cc = 8 < count ? 8 : count;
+	int pc = cc - 1;
+
+	int i;
+
+	for (i = 0; i < cc; i++)
 	{
-		init_color(i, reds[i], greens[i], blues[i]);
-		init_pair(i,size-i,0);
+		init_color(i,reds[i], greens[i], blues[i]);
 	}
 
-	matrix::Terminal::paletteSize = size;
+	for (i = 0; i < pc; i++)
+	{
+		init_pair(1 + i, pc - i, 0);
+	}
+
+	matrix::Terminal::paletteSize = pc;
 }
 
 int matrix::Terminal::getPaletteSize()

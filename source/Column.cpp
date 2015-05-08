@@ -188,6 +188,12 @@ void matrix::Column::draw()
 
 void matrix::Column::draw(int colors)
 {
+	if (colors == 0)
+	{
+		this->draw();
+		return;
+	}
+
 	int blocksize = this->length / colors;
 	if (this->length % colors) blocksize++;
 
@@ -205,11 +211,11 @@ void matrix::Column::draw(int colors)
 	for (i = 0; i < this->length; i++)
 	{
 		if (y+i < 0) continue;
-		if (y+i > this->height) break;
+		if (y+i >= this->height) break;
 
 		//print lower intensities first (higher values)
-		c = colors - 1 - i / blocksize;
-		matrix::Terminal::output(y+i,x, this->buffer[y+i],c);
+		c = colors - i / blocksize;
+		matrix::Terminal::output(y + i, x, this->buffer[y+i], c);
 	}
 
 }
