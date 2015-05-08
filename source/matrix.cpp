@@ -1,15 +1,36 @@
 #include <Column.h>
 #include <Terminal.h>
 
-
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
+#include <iostream>//for cout
+#include <cstdlib> //for atoi(), srand(), and rand()
+#include <ctime>   //for time() (to seed rand)
 
 void setupColors();
+void printUsage(const char * name);
 
-int main()
+int main(int argc, char * argv[])
 {
+	int seconds = 10;
+
+
+	if (argc > 2) 
+	{
+		printUsage(argv[0]);
+		return 0;
+	}
+
+
+
+	if (argc == 2)
+	{
+		seconds = std::atoi(argv[1]);
+		if (seconds <= 0)
+		{
+			printUsage(argv[0]);
+			return 0;
+		}
+	}
+
 	//seed the rng
 	std::srand(std::time(NULL));
 
@@ -28,10 +49,11 @@ int main()
 	//set up for loop
 	int column, speed = 1, length;
 	int tick, nextSpawn = 1;
+	int runtime = seconds * 100;
 
 	//perform the loop
 	//we'll do 100 ticks per second, 10 second run
-	for (tick = 1; tick < 1000; tick++)
+	for (tick = 1; tick < runtime; tick++)
 	{
 		if (tick == nextSpawn)
 		{
@@ -62,6 +84,11 @@ int main()
 }
 
 
+
+void printUsage(const char * name)
+{
+	std::cout << "    usage: " << name << " [seconds]\n";
+}
 
 
 void setupColors()
