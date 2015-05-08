@@ -17,18 +17,23 @@ namespace matrix
 			int position; //how far down the head is
 			int height; //how many rows in the terminal
 
+			int offscreen; //signals the Column is ready to be deleted
+
 			int * buffer;
 
 		public:
 			Column(Column * head, int column, int speed, int length, int height);
 			~Column();
 
-			void increment();
+			int increment();
 
 			void insert(Column * list);
-			void remove();
 
-			void draw(int maxY);
+			int isOffscreen();
+
+			Column * remove();
+
+			void draw();
 	};
 }
 

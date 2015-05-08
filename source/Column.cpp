@@ -22,6 +22,8 @@ matrix::Column::Column(
 
 	this->buffer = new int[height];
 
+	this->offscreen = 0;
+	if (this->height <= 0) this->offscreen = 1;
 
 	//fill buffer with random characters
 	int i, c;
@@ -35,6 +37,10 @@ matrix::Column::Column(
 		buffer[i] = c;
 	}
 }
+
+
+
+
 
 matrix::Column::~Column()
 {
@@ -50,6 +56,25 @@ matrix::Column::~Column()
 
 	delete [] buffer;
 }
+
+
+
+
+
+int matrix::Column::increment()
+{
+	this->position++;
+
+	if (1 + this->position - this->length >= this->height)
+	{
+		this->offscreen = 1;
+	}
+
+	return this->offscreen;
+}
+
+
+
 
 void matrix::Column::insert(matrix::Column * head)
 {
@@ -70,6 +95,69 @@ void matrix::Column::insert(matrix::Column * head)
 		this->prev = this;
 	}
 }
+
+
+matrix::Column * matrix::Column::remove()
+{
+	//if next == this, there're no nodes left after removal
+	if (this == this->next) return NULL;
+
+	//to accomplish the removal, we must do two things:
+	//	1) unlink the node
+	//	2) adjust the head pointer of all nodes if this one is the head
+
+	//unlink the node
+	this->next->prev = this->prev;
+	this->prev->next = this->next;
+
+
+	//adjust the head node if this is head
+	matrix::Column * head = this->head;
+
+	if (this == head)
+	{
+		head = this->next;
+		matrix::Column * node = this->next->next;
+		head->head = head;
+		while (head != node)
+		{
+			node->head = head;
+			node = node->next;
+		}
+	}
+
+	this->head = this;
+	this->next = this;
+	this->prev = this;
+
+	return head;
+}
+
+
+int matrix::Column::isOffscreen()
+{
+	return this->offscreen;
+}
+
+
+void matrix::Column::draw()
+{
+	if (this->offscreen) return;
+
+	//we start at (position,column) and draw upwards
+	int i;
+	
+	int x = this->column;
+	int y = this->position;
+
+	for (i = 0; i < this->length; i++)
+	{
+		if (y-i >= this->height) continue;
+		if (y-i < 0) break;
+		matrix::Terminal::output(y-i,x,this->buffer[i]);
+	}
+}
+
 
 /*
 #ifndef _COLUMN_H
