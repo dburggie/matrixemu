@@ -7,6 +7,9 @@
 
 void setupColors();
 void printUsage(const char * name);
+int parseOptions(const char * opts);
+
+
 
 int main(int argc, char * argv[])
 {
@@ -23,6 +26,8 @@ int main(int argc, char * argv[])
 
 	if (argc == 2)
 	{
+		if (argv[1][0] == '-') return parseOptions(argv[1]);
+
 		seconds = std::atoi(argv[1]);
 		if (seconds <= 0)
 		{
@@ -105,4 +110,36 @@ void setupColors()
 	}
 
 	matrix::Terminal::makePalette(8,r,g,b);
+}
+
+
+
+
+int parseOptions(const char * opts)
+{
+	if (opts[1] != 'c')
+	{
+		std::cout << "invalid options \'" << opts << "\'\n";
+		return 1;
+	}
+
+	int colors = matrix::Terminal::colors();
+
+	if (colors == 0)
+	{
+		std::cout << "Your terminal does not support color.\n";
+		return 0;
+	}
+
+	if (colors > 0)
+	{
+		std::cout << "Your terminal has full support of color.\n";
+		return 0;
+	}
+
+	else
+	{
+		std::cout << "Your terminal has only partial color support.\n";
+		return 0;
+	}
 }

@@ -19,6 +19,7 @@ matrix::Terminal::~Terminal() { };
 
 void matrix::Terminal::init()
 {
+	if (matrix::Terminal::initialized) return;
 	//ncurses init functions
 	initscr();
 	cbreak();
@@ -40,8 +41,10 @@ void matrix::Terminal::init()
 
 void matrix::Terminal::end()
 {
+	matrix::Terminal::initialized = 0;
 	matrix::Terminal::blank();
 	matrix::Terminal::draw();
+	matrix::Terminal::stopflag = 0;
 	endwin();
 }
 
@@ -90,6 +93,40 @@ int matrix::Terminal::getPaletteSize()
 }
 
 
+
+int matrix::Terminal::colors()
+{
+	int end = 0;
+	int r = 0;
+
+	if (!matrix::Terminal::initialized)
+	{
+		matrix::Terminal::init();
+		end = 1;
+	}
+
+	if (!has_colors())
+	{
+		r = 0;
+	}
+
+	else if (!can_change_color())
+	{
+		r = -1;
+	}
+
+	else
+	{
+		r = 1;
+	}
+
+	if (end)
+	{
+		matrix::Terminal::end();
+	}
+
+	return r;
+}
 
 
 void matrix::Terminal::blank()

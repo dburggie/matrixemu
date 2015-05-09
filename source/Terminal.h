@@ -25,7 +25,9 @@ namespace matrix
 			static void init();
 			static void end();
 			static void makePalette(int count, int reds[], int greens[], int blues[]);
-			static int  getPaletteSize();
+			static int getPaletteSize();
+
+			static int colors(); //0 if no color, -1 if no change color, 1 otherwise
 
 			static void blank();
 			static void draw();
