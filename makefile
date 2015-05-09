@@ -4,11 +4,14 @@ INSTALLDIR = ~/bin
 
 
 CC = g++ -std=c++11 -Wall -O0 -Isource
-LIBS = -lpthread -lncurses
+LIBS = -lncurses -lpthread
 
 EXE = MatrixEmu
 
 all: ${EXE}
+
+build:
+	mkdir -p build
 
 
 install: ${EXE}
@@ -27,7 +30,7 @@ tests: ${TESTS}
 
 
 
-build/matrix.o: source/matrix.cpp
+build/matrix.o: source/matrix.cpp build
 	${CC} -o $@ -c $<
 
 ${EXE}: build/matrix.o build/Terminal.o build/Column.o
@@ -39,7 +42,7 @@ ${EXE}: build/matrix.o build/Terminal.o build/Column.o
 
 
 
-build/Terminal.o: source/Terminal.cpp source/Terminal.h
+build/Terminal.o: source/Terminal.cpp source/Terminal.h build
 	${CC} -o $@ -c $<
 
 build/Terminal.test.o: test/Terminal.test.cpp
@@ -53,7 +56,7 @@ Terminal.test: build/Terminal.test.o build/Terminal.o
 
 
 
-build/Column.o: source/Column.cpp source/Column.h build/Terminal.o
+build/Column.o: source/Column.cpp source/Column.h build/Terminal.o build
 	${CC} -o $@ -c $<
 
 build/Column.test.o: test/Column.test.cpp build/Column.o
