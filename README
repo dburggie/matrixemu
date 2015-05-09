@@ -1,8 +1,8 @@
 MatrixEmu - an emulation of the scrolling console text in 'the Matrix'
 
 Dependencies
-* ncurses C library
-* pthread C++11 library
+* ncurses C library (probably in package 'ncurses-dev')
+* pthread C++11 library (should come with g++)
 
 Install -- installs to ~/bin by default, change it or add it to your PATH
 $ git clone https://github.com/dburggie/matrixemu.git
