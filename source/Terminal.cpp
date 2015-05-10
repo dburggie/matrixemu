@@ -1,166 +1,175 @@
 #include <Terminal.h>
+#include <thread>
+#include <unistd.h>
 #include <ncurses.h>
-#include <unistd.h> //for usleep()
-#include <thread>   //std::thread
 
+/* PRIVATE/STATIC MEMBERS */
+
+//private static
 int matrix::Terminal::initialized = 0;
-int matrix::Terminal::rows = 0;
-int matrix::Terminal::cols = 0;
-int matrix::Terminal::delay = 1; // wait one tenth for input
-int matrix::Terminal::paletteSize = 1;
 
-
-matrix::Terminal::Terminal() { };
-
-matrix::Terminal::~Terminal() { };
-
-
-
-
+//private static
 void matrix::Terminal::init()
 {
 	if (matrix::Terminal::initialized) return;
-	//ncurses init functions
-	initscr();
-	cbreak();
-	halfdelay(delay);
-	noecho();
-	curs_set(0);//cursor invisible
-	start_color();
-	getmaxyx(stdscr, rows, cols);
-	matrix::Terminal::blank();
-
-	//set init flag
-	matrix::Terminal::initialized = 1;
-
-	//start UI thread
-	std::thread UIthread(matrix::Terminal::UIwatcher);
-	UIthread.detach();
-}
-
-
-void matrix::Terminal::end()
-{
-	matrix::Terminal::blank();
-	matrix::Terminal::draw();
-
+	initscr();    //start ncurses mode
+	cbreak();     //don't buffer keyboard input
+	noecho();     //don't echo keyboard to screen
+	curse_set(0); //turn off cursor
 	matrix::Terminal::initialized = 0;
-	matrix::Terminal::stopflag = 0;
-	endwin();
 }
 
-
-
-//reds/greens/blues are arrays of color intensity values 0-1000
-//only the first 8 values will be read
-//the value at index 0 will be the background color of all the pairs
-//pairs will have foregrounds from max(7,count-1) to 1 descending
-void matrix::Terminal::makePalette(int count, int reds[], int greens[], int blues[])
+//private static
+void matrix::Terminal::end()
 {
 	if (!matrix::Terminal::initialized) return;
 
-	//if terminal has no color support (or can't change colors)
-	//we have to just exit and live with default color
-	if (!has_colors() || !can_change_color())
-	{
-		return;
-	}
-
-	//give n colors, get n-1 pairs
-	//(n-1,0), (n-2,1), ... , (1,0);
-
-
-	int cc = 8 < count ? 8 : count;
-	int pc = cc - 1;
-
-	int i;
-
-	for (i = 0; i < cc; i++)
-	{
-		init_color(i,reds[i], greens[i], blues[i]);
-	}
-
-	for (i = 0; i < pc; i++)
-	{
-		init_pair(1 + i, pc - i, 0);
-	}
-
-	matrix::Terminal::paletteSize = pc;
+	clear();
+	refresh();
+	endwin();
+	matrix::Terminal::initialized = 0;
 }
 
-int matrix::Terminal::getPaletteSize()
+//private static
+void matrix::Terminal::UIwatcher(void * terminal)
 {
-	return matrix::Terminal::paletteSize;
+	if (!matrix::Terminal::initialized) return;
+	
+	int key;
+	matrix::Terminal * t = (matrix::Terminal *) terminal;
+	do {
+		key = getch();
+	} while (key != 'q');
+
+	t->stopflag = 1;
 }
 
 
 
-int matrix::Terminal::colors()
-{
-	int end = 0;
-	int r = 0;
 
+
+/* PUBLIC MEMBERS */
+
+
+matrix::Terminal::Terminal()
+{
 	if (!matrix::Terminal::initialized)
 	{
-		matrix::Terminal::init();
-		end = 1;
-	}
-
-	if (!has_colors())
-	{
-		r = 0;
-	}
-
-	else if (!can_change_color())
-	{
-		r = -1;
+		this->rows = 0;
+		this->cols = 0;
 	}
 
 	else
 	{
-		r = 1;
+		getmaxyx(stdscr, this->rows, this->cols);
 	}
 
-	if (end)
+	this->paletteSize = 1;
+	this->stopflag = 0;
+
+	if (this->rows)
 	{
-		matrix::Terminal::end();
+		this->screen = new int * [this->rows];
 	}
 
-	return r;
+	if (this->cols)
+	{
+		int i; for (i = 0; i < this->rows; i++)
+		{
+			this->screen[i] = new int [this->cols];
+		}
+	}
+
+
+	//start associated UI
+	std::thread UI (matrix::Terminal::UIwatcher, (void *) this);
+	UI.detach();
 }
+
+
+
+matrix::Terminal::~Terminal()
+{
+	if (this->screen)
+	{
+		int i; for (i = 0; i < this->rows; i++)
+		{
+			if (this->screen[i]) delete [] this->screen[i];
+			this->screen[i] = NULL;
+		}
+
+		delete [] this->screen;
+		this->screen = NULL;
+	}
+}
+
+void matrix::Terminal::makePalette(int count, int r[], int g[], int b[])
+{
+	//don't use ncurses functions if we haven't called initscr()
+	if (!matrix::Terminal::initialized) return;
+
+	//skip this if colors aren't supported
+	if (!has_colors() || !can_change_color())
+	{
+		this->paletteSize = 1;
+	}
+
+	if (count > 8) count = 8;
+	int i;
+
+	//initialize colors
+	for (i = 0; i < count; i++)
+	{
+		init_color(i,r[i],g[i],b[i]);
+	}
+
+	//initialize color pairs, zero is background
+	for (i = 1; i < count; i++)
+	{
+		init_pair(i,i,0);
+	}
+
+	//set palette size (count - 1 unless count is <= 1)
+	this->paletteSize = 1 < count ? count - 1 : 1;
+}
+
+
+
+int matrix::Terminal::getPaletteSize()
+{
+	return this->paletteSize;
+}
+
 
 
 void matrix::Terminal::blank()
 {
-	if (!matrix::Terminal::initialized) return;
-
 	int y,x;
-
-	for (y = 0; y < rows; y++)
+	for (y = 0; y < this->rows; y++)
 	{
-		for (x = 0; x < cols; x++)
+		for (x = 0; x < this->cols; x++)
 		{
-			mvaddch(y,x,' '); //ncurses function
+			this->screen[y][x] = (int) ' ';
 		}
 	}
-
-	move(0,0); //ncurses function
 }
+
 
 
 void matrix::Terminal::draw()
 {
-	if (!matrix::Terminal::initialized) return;
+	int y,x;
+
+	for (y = 0; y < this->rows; y++)
+	{
+		move(y,0);
+		for (x = 0; x < this->cols; x++)
+		{
+			addch(this->screen[y][x]);
+		}
+	}
+
 	refresh();
-}
-
-
-
-void matrix::Terminal::pause()
-{
-	cbreak();
-	getch();
-	halfdelay(delay);
 }
 
 
@@ -170,55 +179,42 @@ void matrix::Terminal::pause(int ms)
 }
 
 
+
 void matrix::Terminal::getSize(int & y, int & x)
 {
-	getmaxyx(stdscr,y,x);
+	y = this->rows;
+	x = this->cols;
 }
 
-
-void matrix::Terminal::output(int y, int x, int c)
+int matrix::Terminal::output(int y, int x, int c)
 {
-	if (!initialized) return;
-	if (y < 0 || y > rows) return;
-	if (x < 0 || x > cols) return;
-
-	mvaddch(y,x,c);
+	if ( y < 0 || y >= this->rows || x < 0 || x >= this->cols)
+		return 1;
+	
+	this->screen[y][x] = c;
+	return 0;
 }
 
 
-void matrix::Terminal::output(int y, int x, int c, int color)
+
+int matrix::Terminal::output(int y, int x, int c, int color)
 {
-	if (!matrix::Terminal::initialized) return;
-	if (y < 0 || y > rows) return;
-	if (x < 0 || x > cols) return;
-
-	mvaddch(y,x,c | COLOR_PAIR(color));
+	if ( y < 0 
+		|| x < 0 
+		|| color < 0 
+		|| y >= this->rows 
+		|| x >= this->cols 
+		|| color >= this->paletteSize)
+	{
+		return 1;
+	}
+	
+	this->screen[y][x] = c | COLOR_PAIR(color);
+	return 0;
 }
 
-
-/* USER INTERFACE THREAD STUFF */
-
-int matrix::Terminal::stopflag = 0;
-
-void matrix::Terminal::UIwatcher()
-{
-	int key;
-	do {
-		key = getch();
-		if (key == 'q')
-		{
-			matrix::Terminal::stopflag = 1;
-		}
-
-		else
-		{
-			key = ERR;
-		}
-	} while (key == ERR);
-}
 
 int matrix::Terminal::done()
 {
-	return matrix::Terminal::stopflag;
+	return this->stopflag;
 }
-
