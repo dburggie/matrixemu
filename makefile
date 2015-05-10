@@ -1,21 +1,26 @@
 
 INSTALLDIR = ~/bin
 
+EXE = MatrixEmu
+HDR = source/Terminal.h source/Column.h source/Linker.h source/Matrix.h
+OBJ = build/main.o build/Matrix.o build/Linker.o build/Column.o build/Terminal.o
 
-
-CC = g++ -std=c++11 -Wall -O0 -Isource
 LIBS = -lncurses -lpthread
 
-EXE = MatrixEmu
+CC = g++ -std=c++11 -Wall -O0 -Isource
+
 
 all: ${EXE}
+
 
 build:
 	mkdir -p build
 
 
 install: ${EXE}
+	mkdir -p ${INSTALLDIR}
 	cp ${EXE} ${INSTALLDIR}/${EXE}
+
 
 clean:
 	rm -f build/*.o
@@ -24,20 +29,14 @@ clean:
 
 
 
-
-TESTS = Terminal.test Column.test
-tests: ${TESTS}
-
-
-
-build/matrix.o: source/matrix.cpp build
-	${CC} -o $@ -c $<
-
-${EXE}: build/matrix.o build/Terminal.o build/Column.o
+${EXE}: ${OBJ}
 	${CC} -o $@ $^ ${LIBS}
 
 
 
+
+build/main.o: source/main.cpp build
+	${CC} -o $@ -c $<
 
 
 
@@ -45,27 +44,20 @@ ${EXE}: build/matrix.o build/Terminal.o build/Column.o
 build/Terminal.o: source/Terminal.cpp source/Terminal.h build
 	${CC} -o $@ -c $<
 
-build/Terminal.test.o: test/Terminal.test.cpp
+
+
+
+build/Column.o: source/Column.cpp source/Column.h source/Terminal.h build
 	${CC} -o $@ -c $<
 
-Terminal.test: build/Terminal.test.o build/Terminal.o
-	${CC} -o $@ $^ ${LIBS}
 
 
 
-
-
-
-build/Column.o: source/Column.cpp source/Column.h build/Terminal.o build
+build/Linker.o: source/Linker.cpp source/Linker.h build
 	${CC} -o $@ -c $<
 
-build/Column.test.o: test/Column.test.cpp build/Column.o
-	${CC} -o $@ -c $<
-
-Column.test: build/Column.test.o build/Column.o build/Terminal.o
-	${CC} -o $@ $^ ${LIBS}
 
 
 
-build/Linker.o: source/Linker.cpp source/Linker.h
+build/Matrix.o: source/Matrix.cpp ${HDR} build
 	${CC} -o $@ -c $<

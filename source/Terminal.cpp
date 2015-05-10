@@ -7,12 +7,12 @@
 //NOTE: I'm super pedantic with the scoping operator here because the ncurses
 //header puts all it's content into the global namespace
 
-/* PRIVATE/STATIC MEMBERS */
+/* STATIC MEMBERS */
 
 //private static
 int matrixemu::Terminal::initialized = 0;
 
-//private static
+//public static
 void matrixemu::Terminal::init()
 {
 	if (matrixemu::Terminal::initialized) return;
@@ -23,7 +23,7 @@ void matrixemu::Terminal::init()
 	matrixemu::Terminal::initialized = 0;
 }
 
-//private static
+//public static
 void matrixemu::Terminal::end()
 {
 	if (!matrixemu::Terminal::initialized) return;
@@ -140,7 +140,7 @@ void matrixemu::Terminal::makePalette(int count, int r[], int g[], int b[])
 
 
 
-int matrixemu::Terminal::getPaletteSize()
+int matrixemu::Terminal::getPaletteSize() const
 {
 	return this->paletteSize;
 }
@@ -161,7 +161,7 @@ void matrixemu::Terminal::blank()
 
 
 
-void matrixemu::Terminal::draw()
+void matrixemu::Terminal::draw() const
 {
 	int y,x;
 
@@ -178,14 +178,14 @@ void matrixemu::Terminal::draw()
 }
 
 
-void matrixemu::Terminal::pause(int ms)
+void matrixemu::Terminal::pause(int ms) const
 {
 	usleep(ms * 1000);
 }
 
 
 
-void matrixemu::Terminal::getSize(int & y, int & x)
+void matrixemu::Terminal::getSize(int & y, int & x) const
 {
 	y = this->rows;
 	x = this->cols;
@@ -219,7 +219,7 @@ int matrixemu::Terminal::output(int y, int x, int c, int color)
 }
 
 
-int matrixemu::Terminal::done()
+int matrixemu::Terminal::done() const
 {
 	return this->stopflag;
 }

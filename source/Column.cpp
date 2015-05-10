@@ -52,17 +52,21 @@ void Column::setLength(int len)
 	if (len < 1) len = 1;
 	this->len = len;
 	this->ymin = 1 + this->ypos - this->len;
+}
 
-	if (this->buffer) delete [] this->buffer;
-
-	this->buffer = new int [len];
+void Column::setTerminal(Terminal * term)
+{
+	//sets term, ymax, and buffer
+	this->term = term;
+	this->ymax = term->getHeight();
+	if (this->buffer) delete [] buffer;
+	buffer = new int [this->ymax];
 
 	int i;
-	for (i = 0; i < len; i++)
+	for (i = 0; i < this->ymax; i++)
 	{
 		this->buffer[i] = randomc();
 	}
-
 }
 
 void Column::setSpeed(int speed) { this->speed = speed; }

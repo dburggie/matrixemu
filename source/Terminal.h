@@ -7,8 +7,6 @@ namespace matrixemu
 	{
 		private:
 			static int initialized;
-			static void init();
-			static void end();
 			static void UIwatcher(void * terminal);
 
 			int rows;
@@ -21,27 +19,32 @@ namespace matrixemu
 
 
 		public:
+			static void init();
+			static void end();
+
 			Terminal();
 			~Terminal();
 
 
 			void makePalette(int count, int reds[], int greens[], int blues[]);
-			int getPaletteSize();
+			int getPaletteSize() const;
 
 			int colors(); //0 if no color, -1 if no change color, 1 otherwise
 
 			void blank();
-			void draw();
+			void draw() const;
 
-			void pause(int ms); //delay for at least ms milliseconds
+			void pause(int ms) const; //delay for at least ms milliseconds
 
-			void getSize(int & y, int & x);
+			void getSize(int & y, int & x) const;
+			int getWidth() const { return cols; }
+			int getHeight() const { return rows; }
 
 			int output(int y, int x, int c);
 			int output(int y, int x, int c, int color);
 
 			//returns 1 iff execution must stop now
-			int done();
+			int done() const;
 	};
 }
 
