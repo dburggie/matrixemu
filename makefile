@@ -3,7 +3,7 @@ INSTALLDIR = ~/bin
 
 EXE = MatrixEmu
 HDR = source/Terminal.h source/Column.h source/Linker.h source/Matrix.h
-OBJ = build/main.o build/Matrix.o build/Column.o build/Terminal.o
+OBJ = build/main.o build/Matrix.o build/Column.o build/Terminal.o build/debug.o
 
 LIBS = -lncurses -lpthread
 
@@ -54,4 +54,10 @@ build/Column.o: source/Column.cpp source/Column.h source/Terminal.h build
 
 
 build/Matrix.o: source/Matrix.cpp ${HDR} build
+	${CC} -o $@ -c $<
+
+
+
+
+build/debug.o: source/debug.cpp source/debug.h
 	${CC} -o $@ -c $<

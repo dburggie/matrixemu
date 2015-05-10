@@ -20,7 +20,7 @@ void matrixemu::Terminal::init()
 	cbreak();     //don't buffer keyboard input
 	noecho();     //don't echo keyboard to screen
 	curs_set(0); //turn off cursor
-	matrixemu::Terminal::initialized = 0;
+	matrixemu::Terminal::initialized = 1;
 }
 
 //public static
