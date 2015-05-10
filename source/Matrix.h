@@ -13,6 +13,7 @@ namespace matrixemu
 			Terminal * terminal;
 			Linker<Column> * columns;
 
+			void setupColors();
 			void drawFrame(int timestamp);
 			void addNewColumn();
 

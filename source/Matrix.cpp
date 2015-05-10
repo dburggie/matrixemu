@@ -27,6 +27,8 @@ void Matrix::run(int frames)
 	//we run until we've rendered enough frames or our terminal member has
 	//detected a quit signal from the user.
 	//we clear the screen when we're done and exit.
+
+	setupColors();
 	
 	int i, spawnpoint = 0;
 	for (i = 0; i < frames; i++)
@@ -45,6 +47,19 @@ void Matrix::run(int frames)
 
 	terminal->blank();
 	terminal->draw();
+}
+
+
+void Matrix::setupColors()
+{
+	int r[8], g[8], b[8], i;
+	for (i = 0; i < 8; i++)
+	{
+		r[i] = 0;
+		g[i] = 125 * i;
+		b[i] = 0;
+	}
+	terminal->makePalette(8,r,g,b);
 }
 
 void Matrix::addNewColumn()

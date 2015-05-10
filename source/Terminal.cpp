@@ -132,7 +132,8 @@ void matrixemu::Terminal::makePalette(int count, int r[], int g[], int b[])
 	//initialize color pairs, zero is background
 	for (i = 1; i < count; i++)
 	{
-		init_pair(i,i,0);
+		//0 is black, highest is bright
+		init_pair(i-1, count-i, 0);
 	}
 
 	//set palette size (count - 1 unless count is <= 1)
