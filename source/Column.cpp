@@ -1,7 +1,6 @@
 //namespace matrixemu
 #include <Column.h>
 #include <Terminal.h>
-#include <debug.h>
 
 //namespace std
 #include <iostream> //std::cerr
@@ -27,8 +26,6 @@ static int randomc()
 
 Column::Column(Terminal * term, int xpos)
 {
-	debug("in Column::Column()");
-
 	this->ypos = 0;
 	this->xpos = xpos;
 	this->speed = 1; //update every tick
@@ -38,9 +35,7 @@ Column::Column(Terminal * term, int xpos)
 
 	this->setLength(10); //sets len and ymin
 	this->setTerminal(term); //sets term, ymax, buffer
-	this->done = (this->ymin < this->ymax);
-
-	debug("end Column::Column()");
+	this->done = (this->ymin >= this->ymax);
 }
 
 Column::~Column()
@@ -56,13 +51,11 @@ void Column::increment()
 {
 	this->ypos++;
 	this->ymin++;
-	this->done = (this->ymin < this->ymax);
+	this->done = (this->ymin >= this->ymax);
 }
 
 void Column::setLength(int len)
 {
-	debug("in Column::setLength()");
-
 	if (len < 1) len = 1;
 	this->len = len;
 	this->ymin = 1 + this->ypos - this->len;
@@ -70,8 +63,6 @@ void Column::setLength(int len)
 
 void Column::setTerminal(Terminal * term)
 {
-	debug("in Column::setTerminal()");
-
 	//sets term, ymax, and buffer
 	this->term = term;
 	this->ymax = term->getHeight();
@@ -110,12 +101,9 @@ void Column::draw(int timestamp)
 	{
 		y = this->ypos - i;
 		if (y < 0) break;
-		if (y - i > this->ymax) continue;
+		if (y >= this->ymax) continue;
 
-		if (this->term->output(y-i,x,this->buffer[y], i/charsPerColor))
-		{
-			debug("Column::draw() made bad Terminal::output(int,int,int,int) call");
-		}
+		this->term->output(y,x,this->buffer[y], i/charsPerColor);
 	}
 
 	if (timestamp % this->speed == 0) this->increment();

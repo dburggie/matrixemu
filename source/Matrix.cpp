@@ -38,7 +38,7 @@ void Matrix::run(int frames)
 		}
 
 		drawFrame(i);
-		terminal->pause(50); //50 ms pause or 20 fps
+		terminal->pause(25); //25 ms pause or 40 fps
 
 		if (terminal->done()) break;
 	}
@@ -80,6 +80,8 @@ void Matrix::drawFrame(int timestamp)
 {
 	Linker<Column> * node = columns->next();
 	Linker<Column> * tmp;
+
+	terminal->blank();
 
 	while (node != columns)
 	{

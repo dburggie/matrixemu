@@ -15,22 +15,13 @@ int main()
 	//seed the prng
 	std::srand(std::time(NULL));
 
-	debug("std::srand() success");
-
 	//turn on curses mode
 	Terminal::init();
 
-	debug("matrixemu::Terminal::init() success");
-
 	Matrix m;
-	debug("matrixemu::Matrix::Matrix() success");
+	m.run(1000);
 
-	m.run(200);
-	debug("matrixemu::Matrix::run() success");
-
-	//turn off curses mode
 	Terminal::end();
-	debug("matrixemu::Terminal::end() success");
 
 	return 0;
 
