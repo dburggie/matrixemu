@@ -67,4 +67,5 @@ Column.test: build/Column.test.o build/Column.o build/Terminal.o
 
 
 
-
+build/Linker.o: source/Linker.cpp source/Linker.h
+	${CC} -o $@ -c $<
