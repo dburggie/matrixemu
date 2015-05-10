@@ -15,7 +15,7 @@ void matrix::Terminal::init()
 	initscr();    //start ncurses mode
 	cbreak();     //don't buffer keyboard input
 	noecho();     //don't echo keyboard to screen
-	curse_set(0); //turn off cursor
+	curs_set(0); //turn off cursor
 	matrix::Terminal::initialized = 0;
 }
 
@@ -80,6 +80,7 @@ matrix::Terminal::Terminal()
 		}
 	}
 
+	this->blank();
 
 	//start associated UI
 	std::thread UI (matrix::Terminal::UIwatcher, (void *) this);

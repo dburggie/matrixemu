@@ -1,281 +1,92 @@
-#include <cstdlib>
 #include <Column.h>
 #include <Terminal.h>
+#include <cstdlib>
 
+using namespace matrix;
 
-static int rtoc(int r)
+static int randomc()
 {
-	r %= 10 + 26 + 26;
-	if (r < 10) return r + 0x30;
-	r -= 10;
-	if (r < 26) return r + 0x41;
-	r -= 26;
-	return r + 0x61;
-	
+	int c = std::rand() % (10 + 26 + 26);
+
+	if (c < 10) return c + 0x30; //ascii numeral	
+	else c -= 10;
+
+	if (c < 26) return c + 0x41; //ascii upper case
+	else c -= 26;
+
+	if (c < 26) return c + 0x61; //ascii lower case
+	else return '?';
 }
 
-//constructor
-matrix::Column::Column(int column, int height)
+
+
+Column::Column(Terminal * term, int xpos)
 {
-	this->head = this;
-	this->next = this;
-	this->prev = this;
-
-	this->column = column;
-	this->speed = 1;//update every tick
-	this->length = 10;
-	this->position = 0;
-	this->height = height;
-
+	this->ypos = 0;
+	this->xpos = xpos;
+	this->speed = 1; //update every tick
 	this->buffer = NULL;
+	this->setLength(10); //sets len and ymin
+	this->setTerminal(term); //sets term, ymax, buffer
+	this->done = (this->ymin < this->ymax);
+}
 
-	this->offscreen = 0;
-	if (this->height <= 0) this->offscreen = 1;
-	else this->buffer = new int[height];
-
-	//fill buffer with random characters
-	int i, c;
-	for (i = 0; i < height; i++)
+Column::~Column()
+{
+	if (this->buffer)
 	{
-		c = rtoc(std::rand() % (10 + 26 + 26));
-		if (this->buffer) this->buffer[i] = c;
+		delete [] buffer;
 	}
 }
 
-
-
-matrix::Column::~Column()
+//private
+void Column::increment()
 {
-	if (this == this->head)
-	{
-		while (this->next != this) delete this->next;
-	}
-
-	else
-	{
-		this->remove();
-	}
-
-	delete [] buffer;
+	this->ypos++;
+	this->ymin++;
+	this->done = (this->ymin < this->ymax);
 }
 
-
-void matrix::Column::setSpeed(int speed)
+void Column::setLength(int len)
 {
-	this->speed = speed;
-}
+	if (len < 1) len = 1;
+	this->len = len;
+	this->ymin = 1 + this->ypos - this->len;
 
+	if (this->buffer) delete [] this->buffer;
 
-int matrix::Column::getSpeed()
-{
-	return this->speed;
-}
+	this->buffer = new int [len];
 
-
-void matrix::Column::setLength(int length)
-{
-	if (length < 0) length = 0;
-	this->length = length;
-}
-
-
-
-
-
-int matrix::Column::increment()
-{
-	this->position++;
-
-	if (1 + this->position - this->length >= this->height)
-	{
-		this->offscreen = 1;
-	}
-
-	return this->offscreen;
-}
-
-
-
-
-void matrix::Column::insert(matrix::Column * head)
-{
-	if (head)
-	{
-		head = head->head;
-		this->head = head;
-		this->next = head;
-		this->prev = head->prev;
-		this->prev->next = this;
-		head->prev = this;
-	}
-
-	else
-	{
-		this->head = this;
-		this->next = this;
-		this->prev = this;
-	}
-}
-
-
-matrix::Column * matrix::Column::remove()
-{
-	//if next == this, there're no nodes left after removal
-	if (this == this->next) return NULL;
-
-	//to accomplish the removal, we must do two things:
-	//	1) unlink the node
-	//	2) adjust the head pointer of all nodes if this one is the head
-
-	//unlink the node
-	this->next->prev = this->prev;
-	this->prev->next = this->next;
-
-
-	//adjust the head node if this is head
-	matrix::Column * head = this->head;
-
-	if (this == head)
-	{
-		head = this->next;
-		matrix::Column * node = this->next->next;
-		head->head = head;
-		while (node != head)
-		{
-			node->head = head;
-			node = node->next;
-		}
-	}
-
-	this->head = this;
-	this->next = this;
-	this->prev = this;
-
-	return head;
-}
-
-
-
-
-
-
-int matrix::Column::isOffscreen()
-{
-	return this->offscreen;
-}
-
-
-
-
-
-void matrix::Column::draw()
-{
-	if (this->offscreen) return;
-
-	//we start at (position,column) and draw upwards
 	int i;
-	
-	int x = this->column;
-	int y = this->position;
-
-	for (i = 0; i < this->length; i++)
+	for (i = 0; i < len; i++)
 	{
-		if (y-i >= this->height) continue;
-		if (y-i < 0) break;
-		matrix::Terminal::output(y-i,x,this->buffer[y-i]);
-	}
-}
-
-void matrix::Column::draw(int colors)
-{
-	if (colors == 1)
-	{
-		this->draw();
-		return;
-	}
-
-	int blocksize = this->length / colors;
-	if (this->length % colors) blocksize++;
-
-	//we need to draw from the top up.
-	//our ending position is this->position
-	//we print a total of this->length chars
-	//we print this->length - 1 chars before the last
-	//we start at this->position - this->length + 1
-	
-	int y = this->position - this->length + 1;
-	int x = this->column;
-	int c; //color index
-	int i; //for loop index
-
-	for (i = 0; i < this->length; i++)
-	{
-		if (y+i < 0) continue;
-		if (y+i >= this->height) break;
-
-		//print lower intensities first (higher values)
-		c = colors - i / blocksize;
-		matrix::Terminal::output(y + i, x, this->buffer[y+i], c);
+		this->buffer[i] = randomc();
 	}
 
 }
 
+void Column::setSpeed(int speed) { this->speed = speed; }
+int Column::getSpeed() { return this->speed; }
+int Column::offscreen() { return this->done; }
 
-
-
-
-
-
-
-void matrix::Column::drawAll(matrix::Column * head)
+void Column::draw(int timestamp)
 {
-	head = head->head;
+	if (this->done || !this->term) return;
 
-	//never draw the head
-	matrix::Column * node = head->next;
-	matrix::Column * tmp = NULL;
+	int colors = term->getPaletteSize(); //palette should be bright to dim 0 - n
+	int charsPerColor = this->len / colors;
+	if (this->len % colors) charsPerColor++;
 
-	int colors = matrix::Terminal::getPaletteSize();
+	int i, y, x = this->xpos;
 
-	while (node != head)
+	for (i = 0; i < this->len; i++)
 	{
-		node->draw(colors);
-		tmp = node;
-		node = node->next;
-		if (tmp->increment())
-		{
-			tmp->remove();
-			delete tmp;
-			tmp = NULL;
-		}
+		y = this->ypos - i;
+		if (y < 0) break;
+		if (y - i > this->ymax) continue;
+
+		this->term->output(y-i,x,this->buffer[y], i/charsPerColor);
 	}
-}
 
-
-void matrix::Column::drawAll(matrix::Column * head, int ticks)
-{
-	head = head->head;
-
-	//never draw the head
-	matrix::Column * node = head->next;
-	matrix::Column * tmp = NULL;
-
-	int colors = matrix::Terminal::getPaletteSize();
-
-	while (node != head)
-	{
-		tmp = node;
-		node = node->next;
-
-		tmp->draw(colors);
-		if (ticks % tmp->getSpeed() == 0)
-		{
-			if (tmp->increment())
-			{
-				tmp->remove();
-				delete tmp;
-				tmp = NULL;
-			}
-		}
-	}
+	if (timestamp % this->speed == 0) this->increment();
 }

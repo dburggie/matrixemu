@@ -1,45 +1,41 @@
 #ifndef _COLUMN_H
 #define _COLUMN_H
 
+#include <Terminal.h>
+
 namespace matrix
 {
 	// this class is a circular linked list of column data
 	class Column
 	{
 		private:
-			Column * head;
-			Column * next;
-			Column * prev; 
+			int ypos;  //y position of head
+			int xpos;  //x position of head
+			int speed; //ticks per increment
+			int len;   //height of column
+			int ymin;  //y position of tail
+			int ymax;  //the first y position that is offscreen
+			int done;  //flags that the column is offscreen and can be deleted
 
-			int column; //what terminal column this Column draws to
-			int speed; //number of hundredths to wait for the next increment
-			int length; //how long the tail is
-			int position; //how far down the head is
-			int height; //how many rows in the terminal
+			matrix::Terminal * term; //terminal in which we will draw
+			int * buffer; //characters in the column
 
-			int offscreen; //signals the Column is ready to be deleted
-
-			int * buffer;
+			//private methods
+			void increment();
 
 		public:
-			Column(int column, int height);
+			Column(matrix::Terminal * term, int xpos);
 			~Column();
 
-			int increment();
 
-			void insert(Column * list);
 			void setSpeed(int speed); //number of ticks before increment
 			int getSpeed();
 			void setLength(int length);
+			void setTerminal(matrix::Terminal * term);
 
-			int isOffscreen();
+			int offscreen(); //returns 1 if no longer prints
 
-			Column * remove();
-
-			void draw();
-			void draw(int colors);
-			static void drawAll(Column * head);
-			static void drawAll(Column * head, int ticks);
+			void draw(int timestamp); //automatically increments after speed ticks
 	};
 }
 
