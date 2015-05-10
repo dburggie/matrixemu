@@ -13,6 +13,13 @@ CC = g++ -std=c++11 -Wall -Isource
 all: ${EXE}
 
 
+
+
+tests: Terminal.test
+
+
+
+
 build:
 	mkdir -p build
 
@@ -24,6 +31,7 @@ install: ${EXE}
 
 clean:
 	rm -f build/*.o
+	rm -f *.test
 	rm -f ${EXE}
 
 
