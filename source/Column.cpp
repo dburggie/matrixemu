@@ -112,7 +112,10 @@ void Column::draw(int timestamp)
 		if (y < 0) break;
 		if (y - i > this->ymax) continue;
 
-		this->term->output(y-i,x,this->buffer[y], i/charsPerColor);
+		if (this->term->output(y-i,x,this->buffer[y], i/charsPerColor))
+		{
+			debug("Column::draw() made bad Terminal::output(int,int,int,int) call");
+		}
 	}
 
 	if (timestamp % this->speed == 0) this->increment();

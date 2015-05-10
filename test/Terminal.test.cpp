@@ -9,10 +9,17 @@ int main()
 	Terminal t;
 
 	t.blank();
-	t.output(0,0,42);
+	int i;
+	for (i = 0; i < 10; i++)
+		t.output(0,i,0x30+i,0);//ascii numeral
+	for (i = 0; i < 26; i++)
+	{
+		t.output(1,i,0x41+i,0);//ascii upper case
+		t.output(2,i,0x61+i,0);//ascii lower case
+	}
 	t.draw();
 
-	t.pause(1000);
+	t.pause(3000);
 
 	t.blank();
 	t.draw();

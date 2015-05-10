@@ -3,7 +3,6 @@
 #include <Column.h>   //class Column
 #include <Linker.h>   //class Linker<T>
 #include <Matrix.h>   //Implementing this
-#include <debug.h>
 
 //namespace std
 #include <cstdlib> //rand()
@@ -25,7 +24,6 @@ Matrix::~Matrix()
 
 void Matrix::run(int frames)
 {
-	debug("in Matrix::run()");
 	//we run until we've rendered enough frames or our terminal member has
 	//detected a quit signal from the user.
 	//we clear the screen when we're done and exit.
@@ -40,9 +38,6 @@ void Matrix::run(int frames)
 		}
 
 		drawFrame(i);
-
-		debug("matrixemu::Matrix::drawFrame() success");
-
 		terminal->pause(50); //50 ms pause or 20 fps
 
 		if (terminal->done()) break;
@@ -50,14 +45,10 @@ void Matrix::run(int frames)
 
 	terminal->blank();
 	terminal->draw();
-
-	debug("end Matrix::run()");
 }
 
 void Matrix::addNewColumn()
 {
-	debug("in Matrix::addNewColumn()");
-
 	//init new column;
 	int xpos, speed, length;
 	xpos = rand() % terminal->getWidth();
@@ -68,7 +59,6 @@ void Matrix::addNewColumn()
 
 	if (!column) 
 	{
-		debug("new Column() fail");
 		return;
 	}
 	
@@ -80,19 +70,14 @@ void Matrix::addNewColumn()
 	if (!link)
 	{
 		delete column;
-		debug("new Linker<Column>() fail");
 		return;
 	}
 
 	link->append(columns);
-
-	debug("end Matrix::addNewColumn()");
 }
 
 void Matrix::drawFrame(int timestamp)
 {
-	debug("in Matrix::drawFrame()");
-
 	Linker<Column> * node = columns->next();
 	Linker<Column> * tmp;
 
@@ -111,17 +96,4 @@ void Matrix::drawFrame(int timestamp)
 	}
 
 	terminal->draw();
-
-	debug("end Matrix::drawFrame()");
 }
-
-/*
-		private:
-			Terminal * terminal;
-			Linker<Column> * columns;
-
-		public:
-			Matrix();
-			~Matrix();
-			void run();
- */
