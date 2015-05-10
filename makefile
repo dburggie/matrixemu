@@ -7,7 +7,7 @@ OBJ = build/main.o build/Matrix.o build/Column.o build/Terminal.o build/debug.o
 
 LIBS = -lncurses -lpthread
 
-CC = g++ -std=c++11 -Wall -O0 -Isource
+CC = g++ -std=c++11 -Wall -Isource
 
 
 all: ${EXE}

@@ -19,6 +19,7 @@ void matrixemu::Terminal::init()
 	initscr();    //start ncurses mode
 	cbreak();     //don't buffer keyboard input
 	noecho();     //don't echo keyboard to screen
+	start_color();
 	curs_set(0); //turn off cursor
 	matrixemu::Terminal::initialized = 1;
 }
