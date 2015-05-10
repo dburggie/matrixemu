@@ -3,40 +3,44 @@
 #include <unistd.h>
 #include <ncurses.h>
 
+
+//NOTE: I'm super pedantic with the scoping operator here because the ncurses
+//header puts all it's content into the global namespace
+
 /* PRIVATE/STATIC MEMBERS */
 
 //private static
-int matrix::Terminal::initialized = 0;
+int matrixemu::Terminal::initialized = 0;
 
 //private static
-void matrix::Terminal::init()
+void matrixemu::Terminal::init()
 {
-	if (matrix::Terminal::initialized) return;
+	if (matrixemu::Terminal::initialized) return;
 	initscr();    //start ncurses mode
 	cbreak();     //don't buffer keyboard input
 	noecho();     //don't echo keyboard to screen
 	curs_set(0); //turn off cursor
-	matrix::Terminal::initialized = 0;
+	matrixemu::Terminal::initialized = 0;
 }
 
 //private static
-void matrix::Terminal::end()
+void matrixemu::Terminal::end()
 {
-	if (!matrix::Terminal::initialized) return;
+	if (!matrixemu::Terminal::initialized) return;
 
 	clear();
 	refresh();
 	endwin();
-	matrix::Terminal::initialized = 0;
+	matrixemu::Terminal::initialized = 0;
 }
 
 //private static
-void matrix::Terminal::UIwatcher(void * terminal)
+void matrixemu::Terminal::UIwatcher(void * terminal)
 {
-	if (!matrix::Terminal::initialized) return;
+	if (!matrixemu::Terminal::initialized) return;
 	
 	int key;
-	matrix::Terminal * t = (matrix::Terminal *) terminal;
+	matrixemu::Terminal * t = (matrixemu::Terminal *) terminal;
 	do {
 		key = getch();
 	} while (key != 'q');
@@ -51,9 +55,9 @@ void matrix::Terminal::UIwatcher(void * terminal)
 /* PUBLIC MEMBERS */
 
 
-matrix::Terminal::Terminal()
+matrixemu::Terminal::Terminal()
 {
-	if (!matrix::Terminal::initialized)
+	if (!matrixemu::Terminal::initialized)
 	{
 		this->rows = 0;
 		this->cols = 0;
@@ -83,13 +87,13 @@ matrix::Terminal::Terminal()
 	this->blank();
 
 	//start associated UI
-	std::thread UI (matrix::Terminal::UIwatcher, (void *) this);
+	std::thread UI (matrixemu::Terminal::UIwatcher, (void *) this);
 	UI.detach();
 }
 
 
 
-matrix::Terminal::~Terminal()
+matrixemu::Terminal::~Terminal()
 {
 	if (this->screen)
 	{
@@ -104,10 +108,10 @@ matrix::Terminal::~Terminal()
 	}
 }
 
-void matrix::Terminal::makePalette(int count, int r[], int g[], int b[])
+void matrixemu::Terminal::makePalette(int count, int r[], int g[], int b[])
 {
 	//don't use ncurses functions if we haven't called initscr()
-	if (!matrix::Terminal::initialized) return;
+	if (!matrixemu::Terminal::initialized) return;
 
 	//skip this if colors aren't supported
 	if (!has_colors() || !can_change_color())
@@ -136,14 +140,14 @@ void matrix::Terminal::makePalette(int count, int r[], int g[], int b[])
 
 
 
-int matrix::Terminal::getPaletteSize()
+int matrixemu::Terminal::getPaletteSize()
 {
 	return this->paletteSize;
 }
 
 
 
-void matrix::Terminal::blank()
+void matrixemu::Terminal::blank()
 {
 	int y,x;
 	for (y = 0; y < this->rows; y++)
@@ -157,7 +161,7 @@ void matrix::Terminal::blank()
 
 
 
-void matrix::Terminal::draw()
+void matrixemu::Terminal::draw()
 {
 	int y,x;
 
@@ -174,20 +178,20 @@ void matrix::Terminal::draw()
 }
 
 
-void matrix::Terminal::pause(int ms)
+void matrixemu::Terminal::pause(int ms)
 {
 	usleep(ms * 1000);
 }
 
 
 
-void matrix::Terminal::getSize(int & y, int & x)
+void matrixemu::Terminal::getSize(int & y, int & x)
 {
 	y = this->rows;
 	x = this->cols;
 }
 
-int matrix::Terminal::output(int y, int x, int c)
+int matrixemu::Terminal::output(int y, int x, int c)
 {
 	if ( y < 0 || y >= this->rows || x < 0 || x >= this->cols)
 		return 1;
@@ -198,7 +202,7 @@ int matrix::Terminal::output(int y, int x, int c)
 
 
 
-int matrix::Terminal::output(int y, int x, int c, int color)
+int matrixemu::Terminal::output(int y, int x, int c, int color)
 {
 	if ( y < 0 
 		|| x < 0 
@@ -215,7 +219,7 @@ int matrix::Terminal::output(int y, int x, int c, int color)
 }
 
 
-int matrix::Terminal::done()
+int matrixemu::Terminal::done()
 {
 	return this->stopflag;
 }

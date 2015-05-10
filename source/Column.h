@@ -3,7 +3,7 @@
 
 #include <Terminal.h>
 
-namespace matrix
+namespace matrixemu
 {
 	// this class is a circular linked list of column data
 	class Column
@@ -17,21 +17,21 @@ namespace matrix
 			int ymax;  //the first y position that is offscreen
 			int done;  //flags that the column is offscreen and can be deleted
 
-			matrix::Terminal * term; //terminal in which we will draw
+			matrixemu::Terminal * term; //terminal in which we will draw
 			int * buffer; //characters in the column
 
 			//private methods
 			void increment();
 
 		public:
-			Column(matrix::Terminal * term, int xpos);
+			Column(matrixemu::Terminal * term, int xpos);
 			~Column();
 
 
 			void setSpeed(int speed); //number of ticks before increment
 			int getSpeed();
 			void setLength(int length);
-			void setTerminal(matrix::Terminal * term);
+			void setTerminal(matrixemu::Terminal * term);
 
 			int offscreen(); //returns 1 if no longer prints
 

@@ -1,7 +1,7 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
 
-namespace matrix
+namespace matrixemu
 {
 	class Terminal
 	{

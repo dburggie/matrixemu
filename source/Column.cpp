@@ -2,7 +2,7 @@
 #include <Terminal.h>
 #include <cstdlib>
 
-using namespace matrix;
+using namespace matrixemu;
 
 static int randomc()
 {
