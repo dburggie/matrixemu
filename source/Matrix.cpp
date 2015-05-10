@@ -43,7 +43,7 @@ void Matrix::run(int frames)
 
 		debug("matrixemu::Matrix::drawFrame() success");
 
-		terminal->pause(50); //20 fps
+		terminal->pause(50); //50 ms pause or 20 fps
 
 		if (terminal->done()) break;
 	}
@@ -109,6 +109,8 @@ void Matrix::drawFrame(int timestamp)
 
 		node = tmp;
 	}
+
+	terminal->draw();
 
 	debug("end Matrix::drawFrame()");
 }

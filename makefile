@@ -24,7 +24,6 @@ install: ${EXE}
 
 clean:
 	rm -f build/*.o
-	rm -f ${TESTS}
 	rm -f ${EXE}
 
 
@@ -44,6 +43,11 @@ build/main.o: source/main.cpp build
 build/Terminal.o: source/Terminal.cpp source/Terminal.h build
 	${CC} -o $@ -c $<
 
+build/Terminal.test.o: test/Terminal.test.cpp
+	${CC} -o $@ -c $<
+
+Terminal.test: build/Terminal.o build/Terminal.test.o
+	${CC} -o $@ $^ ${LIBS}
 
 
 
