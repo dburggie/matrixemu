@@ -137,7 +137,7 @@ void matrixemu::Terminal::makePalette(int count, int r[], int g[], int b[])
 	}
 
 	//set palette size (count - 1 unless count is <= 1)
-	this->paletteSize = 1 < count ? count - 1 : 1;
+	this->paletteSize = 1 < count ? 1 : count - 1;
 }
 
 
